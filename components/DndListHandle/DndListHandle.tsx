@@ -1,5 +1,6 @@
 "use client";
 
+// !Has some bugs open issues page
 import {
   DragDropContext,
   Draggable,
