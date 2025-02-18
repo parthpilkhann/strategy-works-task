@@ -114,12 +114,14 @@ export function DndListHandle({ todos }: { todos: Todo[] }) {
     source: DraggableLocation<string>,
     destination: DraggableLocation<string>
   ) {
+    // Move item to destination list at the specified index
     destinationHandlers.insert(
       Number(destination?.index),
       (destination.droppableId === "inCompleteList"
         ? completedTodos
         : inCompleteTodos)[Number(source.index)]
     );
+    // Remove item from source list
     sourceHandlers.remove(source.index, 1);
   }
 
@@ -127,12 +129,14 @@ export function DndListHandle({ todos }: { todos: Todo[] }) {
     <DragDropContext
       onDragEnd={({ destination, source }) => {
         if (!destination) return;
+        // If dropped in the same list, reorder within that list
         if (source.droppableId === destination?.droppableId) {
           return completedTodoshandlers.reorder({
             from: source.index,
             to: destination?.index || 0,
           });
         } else {
+          // If moved across lists, handle the move accordingly
           if (source.droppableId === "inCompleteList") {
             moveStuff(
               inCompleteTodoshandlers,
@@ -151,7 +155,12 @@ export function DndListHandle({ todos }: { todos: Todo[] }) {
         }
       }}
     >
-      <Stack justify="center" align="center" gap="xl" style={{ overflow: "auto" }}>
+      <Stack
+        justify="center"
+        align="center"
+        gap="xl"
+        style={{ overflow: "auto" }}
+      >
         <Title>MY TODO</Title>
         <Stack>
           <TextInput
