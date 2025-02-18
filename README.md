@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Todo App with Drag-and-Drop Functionality
+
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). It features a drag-and-drop to-do list with the ability to add, delete, and rearrange tasks. It uses `@hello-pangea/dnd` for drag-and-drop functionality and `@mantine/core` for UI components.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+To run this project locally, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd <project-folder>
+    ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Run the development server:**
+    ```bash
+    npm run dev
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Open the application:**
+    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Learn More
+You can start editing the project by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Approach
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This application is built using the following approach:
 
-## Deploy on Vercel
+- **Component Structure:** The UI is organized using React functional components and hooks (`useState`, `useListState` from `@mantine/hooks`) to manage state.
+- **Data Management:** The to-do items are categorized into two states: `inCompleteTodos` and `completedTodos`. This separation allows for efficient handling of tasks based on their completion status.
+- **Drag-and-Drop:** Implemented using `@hello-pangea/dnd`. It enables users to:
+  - Reorder tasks within the same category (incomplete or completed).
+  - Move tasks between the incomplete and completed categories.
+- **Adding and Deleting Tasks:**
+  - Users can add new tasks using an input field and a button.
+  - Tasks can be deleted using a trash icon next to each task.
+- **Styling:** The UI is styled using `@mantine/core` components for consistent design and `clsx` for conditional class management.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Trade-offs and Improvements
+
+### Trade-offs:
+- **Unique Key Constraint:** The `todo` string is used as the key for the draggable items, which may cause issues if two tasks have identical descriptions. Using a unique `id` as the key would be more robust.
+- **State Management:** The current state management approach is suitable for a small-scale application but might not scale well with more complex requirements. Implementing a global state management solution (e.g., Redux, Zustand) could enhance maintainability.
+
+### Improvements:
+- **Persistent Storage:** Currently, tasks are stored in memory. Integrating local storage or a backend database would allow tasks to persist across browser sessions.
+- **Input Validation:** Implementing input validation (e.g., preventing empty tasks) would improve user experience.
+- **Accessibility Enhancements:** Adding ARIA attributes to improve accessibility for users with assistive technologies.
+- **Enhanced Drag-and-Drop Features:**
+  - Adding animations to make the drag-and-drop experience smoother.
+  - Allowing multi-select and bulk actions for tasks.
+- **Performance Optimization:** Memoization techniques (`useMemo`, `useCallback`) could be used to optimize rendering performance for larger task lists.
