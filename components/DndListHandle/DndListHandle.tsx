@@ -31,32 +31,17 @@ export function DndListHandle({ todos }: { todos: Todo[] }) {
   const [inCompleteTodos, inCompleteTodoshandlers] = useListState(
     todos.filter((todo: Todo) => !todo.completed)
   );
-
-  const [newUser, setNewUser] = useState<{
-    title: string;
-    description: string;
-  }>({
-    title: "",
-    description: "",
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewUser({
-      ...newUser,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [newTodo, setNewTodo] = useState<string>("");
 
   const handleAddUser = () => {
-    const newTodo: Todo = {
+    const newTodoObj: Todo = {
       userId: Math.random(),
       id: Math.random(),
-      todo: newUser.title,
+      todo: newTodo,
       completed: false,
     };
-
-    inCompleteTodoshandlers.append(newTodo);
-    setNewUser({ title: "", description: "" });
+    inCompleteTodoshandlers.append(newTodoObj);
+    setNewTodo("");
   };
 
   const handleDeleteTodo = (id: number, completed: boolean) => {
@@ -166,50 +151,47 @@ export function DndListHandle({ todos }: { todos: Todo[] }) {
         }
       }}
     >
-      <Group gap="xl">
-        <Paper withBorder p="lg">
-          <Stack>
-            <Title>Completed</Title>
-            <Droppable droppableId="completedList" direction="vertical">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {completedTodosItems}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>{" "}
-          </Stack>
-        </Paper>
-
-        <Paper withBorder p="lg">
-          <Stack>
-            <Title>InComplete</Title>
-            <Droppable droppableId="inCompleteList" direction="vertical">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {inCompleteTodosItems}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-            <TextInput
-              label="Title"
-              placeholder="Enter title"
-              name="title"
-              value={newUser.title}
-              onChange={handleInputChange}
-            />
-            <TextInput
-              label="Description"
-              placeholder="Enter description"
-              name="description"
-              value={newUser.description}
-              onChange={handleInputChange}
-            />
-            <Button onClick={handleAddUser}>Add User</Button>
-          </Stack>
-        </Paper>
-      </Group>
+      <Stack justify="center" align="center" gap="xl" style={{ overflow: "auto" }}>
+        <Title>MY TODO</Title>
+        <Stack>
+          <TextInput
+            label="Todo"
+            placeholder="Enter Todo"
+            name="Todo"
+            value={newTodo}
+            onChange={(e) => setNewTodo(e.currentTarget.value)}
+          />
+          <Button onClick={handleAddUser}>Add TODO</Button>
+        </Stack>
+        <Group gap="xl" wrap="nowrap" align="start" justify="center">
+          <Paper withBorder p="lg">
+            <Stack>
+              <Title order={4}>Incomplete</Title>
+              <Droppable droppableId="inCompleteList" direction="vertical">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {inCompleteTodosItems}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </Stack>
+          </Paper>
+          <Paper withBorder p="lg">
+            <Stack>
+              <Title order={4}>Completed</Title>
+              <Droppable droppableId="completedList" direction="vertical">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {completedTodosItems}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>{" "}
+            </Stack>
+          </Paper>
+        </Group>
+      </Stack>
     </DragDropContext>
   );
 }
