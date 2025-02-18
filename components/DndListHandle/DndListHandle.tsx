@@ -1,15 +1,24 @@
 "use client";
 
-// !Has some bugs open issues page
+import React, { useState } from "react";
 import {
   DragDropContext,
   Draggable,
   DraggableLocation,
   Droppable,
 } from "@hello-pangea/dnd";
-import { IconGripVertical } from "@tabler/icons-react";
+import { IconGripVertical, IconTrash } from "@tabler/icons-react";
 import cx from "clsx";
-import { Group, Paper, Stack, Text, Title } from "@mantine/core";
+import {
+  Group,
+  Paper,
+  Stack,
+  Text,
+  Title,
+  TextInput,
+  Button,
+  ActionIcon,
+} from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import type { UseListStateHandlers } from "@mantine/hooks";
 import classes from "./DndListHandle.module.css";
@@ -22,6 +31,43 @@ export function DndListHandle({ todos }: { todos: Todo[] }) {
   const [inCompleteTodos, inCompleteTodoshandlers] = useListState(
     todos.filter((todo: Todo) => !todo.completed)
   );
+
+  const [newUser, setNewUser] = useState<{
+    title: string;
+    description: string;
+  }>({
+    title: "",
+    description: "",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewUser({
+      ...newUser,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleAddUser = () => {
+    const newTodo: Todo = {
+      userId: Math.random(),
+      id: Math.random(),
+      todo: newUser.title,
+      completed: false,
+    };
+
+    inCompleteTodoshandlers.append(newTodo);
+    setNewUser({ title: "", description: "" });
+  };
+
+  const handleDeleteTodo = (id: number, completed: boolean) => {
+    if (completed) {
+      const index = completedTodos.findIndex((todo) => todo.id === id);
+      completedTodoshandlers.remove(index);
+    } else {
+      const index = inCompleteTodos.findIndex((todo) => todo.id === id);
+      inCompleteTodoshandlers.remove(index);
+    }
+  };
 
   const completedTodosItems = completedTodos.map((item, index) => (
     <Draggable key={item.todo} index={index} draggableId={item.todo}>
@@ -36,17 +82,22 @@ export function DndListHandle({ todos }: { todos: Todo[] }) {
           <div {...provided.dragHandleProps} className={classes.dragHandle}>
             <IconGripVertical size={18} stroke={1.5} />
           </div>
-          <div>
-            <p>{item.id}</p>
+          <Group>
             <Text>{item.todo?.slice(0, 45)}</Text>
-          </div>
+            <ActionIcon
+              color="red"
+              onClick={() => handleDeleteTodo(item.id, true)}
+            >
+              <IconTrash size={18} />
+            </ActionIcon>
+          </Group>
         </div>
       )}
     </Draggable>
   ));
 
   const inCompleteTodosItems = inCompleteTodos.map((item, index) => (
-    <Draggable key={item.todo} index={index} draggableId={item?.todo}>
+    <Draggable key={item.todo} index={index} draggableId={item.todo}>
       {(provided, snapshot) => (
         <div
           className={cx(classes.item, {
@@ -58,10 +109,15 @@ export function DndListHandle({ todos }: { todos: Todo[] }) {
           <div {...provided.dragHandleProps} className={classes.dragHandle}>
             <IconGripVertical size={18} stroke={1.5} />
           </div>
-          <div>
-            <p>{item.id}</p>
+          <Group>
             <Text>{item.todo?.slice(0, 45)}</Text>
-          </div>
+            <ActionIcon
+              color="red"
+              onClick={() => handleDeleteTodo(item.id, false)}
+            >
+              <IconTrash size={18} />
+            </ActionIcon>
+          </Group>
         </div>
       )}
     </Draggable>
@@ -107,11 +163,6 @@ export function DndListHandle({ todos }: { todos: Todo[] }) {
               destination
             );
           }
-          // completedTodoshandlers.remove(source.index, 1);
-          // inCompleteTodoshandlers.insert(
-          //   Number(destination?.index),
-          //   completedTodos[Number(destination?.index)]
-          // );
         }
       }}
     >
@@ -141,6 +192,21 @@ export function DndListHandle({ todos }: { todos: Todo[] }) {
                 </div>
               )}
             </Droppable>
+            <TextInput
+              label="Title"
+              placeholder="Enter title"
+              name="title"
+              value={newUser.title}
+              onChange={handleInputChange}
+            />
+            <TextInput
+              label="Description"
+              placeholder="Enter description"
+              name="description"
+              value={newUser.description}
+              onChange={handleInputChange}
+            />
+            <Button onClick={handleAddUser}>Add User</Button>
           </Stack>
         </Paper>
       </Group>
