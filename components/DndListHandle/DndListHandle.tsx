@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DragDropContext,
   Draggable,
@@ -24,14 +24,24 @@ import type { UseListStateHandlers } from "@mantine/hooks";
 import classes from "./DndListHandle.module.css";
 import { Todo } from "@/helpers/types";
 
-export function DndListHandle({ todos }: { todos: Todo[] }) {
-  const [completedTodos, completedTodoshandlers] = useListState(
-    todos.filter((todo: Todo) => todo.completed)
-  );
-  const [inCompleteTodos, inCompleteTodoshandlers] = useListState(
-    todos.filter((todo: Todo) => !todo.completed)
-  );
+export function DndListHandle() {
+  const [completedTodos, completedTodoshandlers] = useListState<Todo>([]);
+  const [inCompleteTodos, inCompleteTodoshandlers] = useListState<Todo>([]);
   const [newTodo, setNewTodo] = useState<string>("");
+
+  useEffect(() => {
+    fetch("https://dummyjson.com/todos")
+      .then((res) => res.json())
+      .then(({ todos }) => {
+        completedTodoshandlers.setState(
+          todos.filter((todo: Todo) => todo.completed)
+        );
+        inCompleteTodoshandlers.setState(
+          todos.filter((todo: Todo) => !todo.completed)
+        );
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
 
   const handleAddUser = () => {
     const newTodoObj: Todo = {
