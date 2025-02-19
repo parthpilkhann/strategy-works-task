@@ -9,7 +9,7 @@ function LargestPageContentful() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://dummyjson.com/todos");
+        const response = await fetch("https://dummyjson.com/test");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
