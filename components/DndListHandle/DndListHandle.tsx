@@ -24,12 +24,12 @@ import type { UseListStateHandlers } from "@mantine/hooks";
 import classes from "./DndListHandle.module.css";
 import { Todo } from "@/helpers/types";
 
-export function DndListHandle({ todos }: { todos: Todo[] }) {
+export function DndListHandle({ todos }: { todos: Todo[] | null }) {
   const [completedTodos, completedTodoshandlers] = useListState(
-    todos.filter((todo: Todo) => todo.completed)
+    todos?.filter((todo: Todo) => todo.completed)
   );
   const [inCompleteTodos, inCompleteTodoshandlers] = useListState(
-    todos.filter((todo: Todo) => !todo.completed)
+    todos?.filter((todo: Todo) => !todo.completed)
   );
   const [newTodo, setNewTodo] = useState<string>("");
 
