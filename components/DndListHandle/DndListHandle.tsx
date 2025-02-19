@@ -43,14 +43,14 @@ export function DndListHandle() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const handleAddUser = () => {
+  const handleAddTask = () => {
     const newTodoObj: Todo = {
       userId: Math.random(),
       id: Math.random(),
       todo: newTodo,
       completed: false,
     };
-    inCompleteTodoshandlers.append(newTodoObj);
+    inCompleteTodoshandlers.prepend(newTodoObj);
     setNewTodo("");
   };
 
@@ -180,7 +180,7 @@ export function DndListHandle() {
             value={newTodo}
             onChange={(e) => setNewTodo(e.currentTarget.value)}
           />
-          <Button onClick={handleAddUser}>Add TODO</Button>
+          <Button onClick={handleAddTask}>Add TODO</Button>
         </Stack>
         <Group gap="xl" wrap="nowrap" align="start" justify="center">
           <Paper withBorder p="lg">
