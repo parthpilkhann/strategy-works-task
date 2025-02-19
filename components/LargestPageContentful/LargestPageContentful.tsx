@@ -4,7 +4,7 @@ import { DndListHandle } from "../DndListHandle/DndListHandle";
 import { Todo } from "@/helpers/types";
 
 function LargestPageContentful() {
-  const [testData, setTestData] = useState<null | Todo[]>(null);
+  const [testData, setTestData] = useState<Todo[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,7 +14,7 @@ function LargestPageContentful() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setTestData(data);
+        setTestData(data.todos);
       } catch (error) {
         console.error("Error fetching data:", error);
         setTestData([]); // Set empty array as fallback
